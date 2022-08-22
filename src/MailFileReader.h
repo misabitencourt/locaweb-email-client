@@ -12,7 +12,6 @@ class MailFileReader {
         static const int READING_SUBJECT = 2;
         static const int READING_ATTACHEMENTS = 3;
         static const int READING_MESSAGE = 4;
-        static const int READING_END = 5;
 
     public:
         void load() 
@@ -21,14 +20,51 @@ class MailFileReader {
             if (emailFile.is_open())
             {
                 std::string lineBuffer;
+                int state = READING_TO;
+                int line = 0;
                 while (getline(emailFile, lineBuffer))
                 {
+                    line++;
                     int lineLength = lineBuffer.length();
                     if (!lineLength)
                     {
                         continue;
                     }
-                    // TODO to read
+                    if (!lineBuffer.find("----"))
+                    {
+                        state++;
+                        continue;
+                    }
+                    if (state == READING_TO)
+                    {
+                        to = lineBuffer.substr(0, lineLength);
+                        continue;
+                    }
+                    if (state == READING_SUBJECT)
+                    {
+                        subject = lineBuffer.substr(0, lineLength);
+                        continue;
+                    }
+                    if (state == READING_ATTACHEMENTS)
+                    {
+                        int pipeIndex = lineBuffer.find("|");
+                        if (pipeIndex > lineLength)
+                        {
+                            printf("Attachment without mimetype on email line %i", line);
+                            exit(1);
+                        }
+                        Attachement attachment;
+                        attachment.fileName = lineBuffer.substr(0, pipeIndex);
+                        attachment.mimeType = lineBuffer.substr(pipeIndex, lineLength);
+                        attachment.base64Encode();
+                        files.push_back(attachment);
+                        continue;
+                    }
+                    if (state == READING_MESSAGE)
+                    {
+                        message += lineBuffer;
+                        message += "\n";
+                    }
                 }
             }
             else

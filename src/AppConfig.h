@@ -1,4 +1,5 @@
-
+static const int ACCESS_TOKEN = 1;
+static const int EMAIL_FROM = 2;
 
 
 class AppConfig {
@@ -7,9 +8,6 @@ class AppConfig {
         std::map<int, std::string> configs;
 
     public:
-        static const int ACCESS_TOKEN = 1;
-        static const int EMAIL_FROM = 2;
-
         void load() 
         {
             std::fstream configFileStream("./config.cfg");
@@ -32,14 +30,14 @@ class AppConfig {
                     }
                     std::string configKey = lineBuffer.substr(0, separatorIndex);
                     std::string configValue = lineBuffer.substr(separatorIndex, lineLength-1);                    
-                    if (configKey.find('ACCESS_TOKEN') < lineLength)
+                    if (configKey.find("ACCESS_TOKEN") < lineLength)
                     {
                         configs[ACCESS_TOKEN] = configValue;
                         continue;
                     }
-                    if (configKey.find('EMAIL_FROM') < lineLength)
+                    if (configKey.find("EMAIL_FROM") < lineLength)
                     {
-                        configs[ACCESS_TOKEN] = configValue;
+                        configs[EMAIL_FROM] = configValue;
                         continue;
                     }
                     line++;

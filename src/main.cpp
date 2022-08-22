@@ -10,4 +10,7 @@ int main()
 
     AppConfig config;
     config.load();
+
+    MailFileReader emailFile;
+    emailFile.load();
 }

@@ -2,8 +2,8 @@ misabitencourt@gmail.com
 ----
 Email subject
 ----
-attachment.jpg
-attachment2.jpg
+attachment.jpg|image/jpg
+attachment2.jpg|image/jpg
 ----
 <h1>Hello</h1>
 <p>
