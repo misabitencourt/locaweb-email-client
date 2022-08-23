@@ -12,10 +12,13 @@ class MailFileReader {
         static const int READING_SUBJECT = 2;
         static const int READING_ATTACHEMENTS = 3;
         static const int READING_MESSAGE = 4;
+        AppConfig config;
 
     public:
-        void load() 
+        void load(AppConfig _config) 
         {
+            config = _config;
+            from = config.getConfig(EMAIL_FROM);
             std::fstream emailFile("./email.txt");
             if (emailFile.is_open())
             {
@@ -63,9 +66,10 @@ class MailFileReader {
                     if (state == READING_MESSAGE)
                     {
                         message += lineBuffer;
-                        message += "\n";
                     }
                 }
+                emailFile.close();
+                loaded = true;
             }
             else
             {
@@ -80,6 +84,12 @@ class MailFileReader {
                 printf("Email not loaded\n");
                 exit(1);
             }
+            std::string jsonBody = "{\"subject\":\""+ subject +"\",\"from\": \""+ from +"\",\"to\":\""+ to +"\",";
+            jsonBody += "\"headers\":{\"Content-Type\":\"multipart/mixed; boundary=\\\"00001\\\"\",\"MIME-Version\": \"1.0\"},";
+            jsonBody += "\"body\": \"--00001\\r\\nContent-Type: text/html\\r\\n\\r\\n<!DOCTYPE html> "+ message +"\\r\\n--00001";
+            jsonBody += "\\r\\n--00001--\"}";
+            printf("json: %s", jsonBody.c_str());
+
         }
 
 };

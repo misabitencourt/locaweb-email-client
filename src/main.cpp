@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "./lib/base64.h"
 #include "./lib/httplib.h"
 #include "./Attachement.h"
 #include "./AppConfig.h"
@@ -12,5 +13,6 @@ int main()
     config.load();
 
     MailFileReader emailFile;
-    emailFile.load();
+    emailFile.load(config);
+    emailFile.send();
 }

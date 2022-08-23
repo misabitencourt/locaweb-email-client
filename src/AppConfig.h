@@ -29,7 +29,7 @@ class AppConfig {
                         continue;
                     }
                     std::string configKey = lineBuffer.substr(0, separatorIndex);
-                    std::string configValue = lineBuffer.substr(separatorIndex, lineLength-1);                    
+                    std::string configValue = lineBuffer.substr(separatorIndex+1, lineLength-1);                    
                     if (configKey.find("ACCESS_TOKEN") < lineLength)
                     {
                         configs[ACCESS_TOKEN] = configValue;
