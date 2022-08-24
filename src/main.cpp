@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "./lib/base64.h"
+#define CPPHTTPLIB_OPENSSL_SUPPORT
 #include "./lib/httplib.h"
 #include "./Attachement.h"
 #include "./AppConfig.h"

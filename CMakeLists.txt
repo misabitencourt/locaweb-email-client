@@ -11,5 +11,10 @@ file(GLOB SOURCES
 
 include_directories(./)
 
+set(OPENSSL_USE_STATIC_LIBS TRUE)
+find_package(OpenSSL REQUIRED)
+
+
 add_executable(locaweb_email_client ${SOURCES})
 
+target_link_libraries(locaweb_email_client PUBLIC OpenSSL::SSL OpenSSL::Crypto)

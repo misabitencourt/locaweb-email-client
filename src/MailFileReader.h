@@ -58,7 +58,7 @@ class MailFileReader {
                         }
                         Attachement attachment;
                         attachment.fileName = lineBuffer.substr(0, pipeIndex);
-                        attachment.mimeType = lineBuffer.substr(pipeIndex, lineLength);
+                        attachment.mimeType = lineBuffer.substr(pipeIndex+1, lineLength);
                         attachment.base64Encode();
                         files.push_back(attachment);
                         continue;
@@ -87,9 +87,26 @@ class MailFileReader {
             std::string jsonBody = "{\"subject\":\""+ subject +"\",\"from\": \""+ from +"\",\"to\":\""+ to +"\",";
             jsonBody += "\"headers\":{\"Content-Type\":\"multipart/mixed; boundary=\\\"00001\\\"\",\"MIME-Version\": \"1.0\"},";
             jsonBody += "\"body\": \"--00001\\r\\nContent-Type: text/html\\r\\n\\r\\n<!DOCTYPE html> "+ message +"\\r\\n--00001";
+            std::list<Attachement>::iterator attachementIterator;
+            for (attachementIterator = files.begin(); attachementIterator != files.end(); ++attachementIterator) 
+            {
+                jsonBody += "\\r\\nContent-Type: application/octect-stream\\r\\n\\r\\nContent-Type: "+ attachementIterator->mimeType +"\\r\\nMIME-Version: 1.0\\r\\nContent-Transfer-Encoding: base64\\r\\n\\r\\n";
+                jsonBody += attachementIterator->base64;
+                jsonBody += "\\r\\n";
+            }
             jsonBody += "\\r\\n--00001--\"}";
-            printf("json: %s", jsonBody.c_str());
-
+            httplib::Headers headers = {
+                { "x-auth-token", config.getConfig(ACCESS_TOKEN).c_str() }
+            };
+            httplib::Client cli("https://api.smtplw.com.br");
+            auto res = cli.Post("/v1/messages", headers, jsonBody, "application/json");
+            printf("Response: %i\n", res->status);
+            if (res->status > 310)
+            {
+                printf("Email send error!");
+                exit(1);
+            }
+            printf("Email successfully sent!\n");
         }
 
 };
