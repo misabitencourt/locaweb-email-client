@@ -90,13 +90,15 @@ class MailFileReader {
             std::list<Attachement>::iterator attachementIterator;
             for (attachementIterator = files.begin(); attachementIterator != files.end(); ++attachementIterator) 
             {
-                jsonBody += "\\r\\nContent-Type: application/octect-stream\\r\\n\\r\\nContent-Type: "+ attachementIterator->mimeType +"\\r\\nMIME-Version: 1.0\\r\\nContent-Transfer-Encoding: base64\\r\\n\\r\\n";
+                printf("Attachement linked!\n");
+                jsonBody += "\\r\\nContent-Type: "+ attachementIterator->mimeType +"\\r\\nMIME-Version: 1.0\\r\\nContent-Transfer-Encoding: base64\\r\\n\\r\\n";
                 jsonBody += attachementIterator->base64;
                 jsonBody += "\\r\\n";
             }
             jsonBody += "\\r\\n--00001--\"}";
             httplib::Headers headers = {
-                { "x-auth-token", config.getConfig(ACCESS_TOKEN).c_str() }
+                { "x-auth-token", config.getConfig(ACCESS_TOKEN).c_str() },
+                { "MIME-Version", "1.0" }
             };
             httplib::Client cli("https://api.smtplw.com.br");
             auto res = cli.Post("/v1/messages", headers, jsonBody, "application/json");
