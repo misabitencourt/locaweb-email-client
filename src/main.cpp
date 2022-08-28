@@ -8,8 +8,6 @@
 
 int main()
 {
-    printf("TODO\n");
-
     AppConfig config;
     config.load();
 
