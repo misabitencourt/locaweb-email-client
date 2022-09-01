@@ -8,7 +8,7 @@ class AppConfig {
         std::map<int, std::string> configs;
 
     public:
-        void load() 
+        void load(int argc, char ** argv) 
         {
             std::fstream configFileStream("./config.cfg");
             std::string lineBuffer;
@@ -42,11 +42,21 @@ class AppConfig {
                     }
                     line++;
                 }
+                configFileStream.close();
             }
             else
             {
                 printf("The config file doesnt exists\n");
                 exit(1);
+            }
+
+            for (int i=0; i<argc; i++) {
+                std::string argStr = std::string(argv[i]);
+                std::string token = "locawebkey=";
+                int tokenIndex = argStr.find(token.c_str());
+                if (tokenIndex < argStr.length()) {
+                    configs[ACCESS_TOKEN] = argStr.substr(token.length(), argStr.length()-1);
+                }
             }
         }
 

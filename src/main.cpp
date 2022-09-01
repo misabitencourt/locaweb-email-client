@@ -6,10 +6,10 @@
 #include "./AppConfig.h"
 #include "./MailFileReader.h"
 
-int main()
+int main(int argc, char **argv)
 {
-    AppConfig config;
-    config.load();
+    AppConfig config;    
+    config.load(argc, argv);    
 
     MailFileReader emailFile;
     emailFile.load(config);

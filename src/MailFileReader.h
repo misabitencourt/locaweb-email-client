@@ -105,7 +105,7 @@ class MailFileReader {
             printf("Response: %i\n", res->status);
             if (res->status > 310)
             {
-                printf("Email send error!");
+                printf("Email send error!\n");
                 exit(1);
             }
             printf("Email successfully sent!\n");
